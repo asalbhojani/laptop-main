@@ -37,6 +37,11 @@ class _AddToCartState extends State<AddToCart> {
   String id="";
   String name="";
 
+  double total =0;
+  var tax ;
+  var shipping ;
+  var grandTotal;
+
 
 
 
@@ -143,6 +148,22 @@ class _AddToCartState extends State<AddToCart> {
                                         String brand = snapshot.data!.docs[index]['Product-Brand'];
                                         String img = snapshot.data!.docs[index]['Product-Image'];
                                         String price = snapshot.data!.docs[index]['Product-Price'];
+
+                                        double calculateTotal(List<dynamic> prices) {
+                                          double total = 0.0;
+                                          for (var price in prices) {
+                                            total += double.parse(price['Product-Price'].toString());
+                                          }
+
+                                          return total;
+                                        }
+                                        List<dynamic> prices = snapshot.data!.docs;
+                                        double totalPrice = calculateTotal(prices);
+
+                                        total = totalPrice;
+                                        tax = totalPrice*0.18;
+                                        shipping = 30;
+                                        grandTotal = total+tax+shipping;
 
 
                                         id=id;
@@ -277,8 +298,8 @@ class _AddToCartState extends State<AddToCart> {
                             height: 50,
                             child: ElevatedButton(onPressed: (){
                               setState(() {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> CheckOutScreen(productId: id, productName: name, ),));
-                                // updateData("Luxury Table", 48,"assets/img/table.png");
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> CheckOutScreen(productId: id, productName: name, total: total, tax: tax, shipping: shipping, grandTotal: grandTotal, ),));
+
                               });
                             },
                               style: ButtonStyle(

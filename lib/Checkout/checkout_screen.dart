@@ -7,9 +7,13 @@ import 'package:uuid/uuid.dart';
 import 'Order_place_screen.dart';
 
 class CheckOutScreen extends StatefulWidget {
+  double total =0;
+  var tax ;
+  var shipping ;
+  var grandTotal;
   String productId;
   String productName;
-  CheckOutScreen({required this.productId,required this.productName});
+  CheckOutScreen({required this.productId,required this.productName,required this.total,required this.tax,required this.shipping,required this.grandTotal,});
 
   @override
   State<CheckOutScreen> createState() => _CheckOutScreenState();
@@ -37,11 +41,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController address = TextEditingController();
 
-  double total =0;
-  var tax ;
-  var shipping ;
-  var grandTotal;
+  // double total =0;
+  // var tax ;
+  // var shipping ;
+  // var grandTotal;
 
+
+get total => widget.total;
+get tax => int.parse(widget.tax);
+get shipping => widget.shipping;
+get grandTotal => widget.grandTotal;
 
 
   void checkOut() async{
@@ -53,7 +62,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       "User-name": name.text.toString(),
       "User-email": email.text.toString(),
       "User-address": address.text.toString(),
-      "Total-amount":grandTotal,
+      // "Total-amount":grandTotal,
     };
     await FirebaseFirestore.instance.collection("Check-Out").doc(userID).set(checkout);
     FirebaseFirestore.instance.collection("Add-to-Cart").where("User-Email",isEqualTo:uEmail).get().then((querySnapshot) => querySnapshot.docs.forEach((doc) => doc.reference.delete()));
@@ -190,21 +199,22 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
                                  // var convert = num.tryParse(price)?.toDouble();
                                  // var total = price+price;
-                                 double calculateTotal(List<dynamic> prices) {
-                                   double total = 0.0;
-                                   for (var price in prices) {
-                                     total += double.parse(price['Product-Price'].toString());
-                                   }
 
-                                   return total;
-                                 }
-                                 List<dynamic> prices = snapshot.data!.docs;
-                                   double totalPrice = calculateTotal(prices);
-
-                                     total = totalPrice;
-                                     tax = totalPrice*0.18;
-                                     shipping = 30;
-                                     grandTotal = total+tax+shipping;
+                                 // double calculateTotal(List<dynamic> prices) {
+                                 //   double total = 0.0;
+                                 //   for (var price in prices) {
+                                 //     total += double.parse(price['Product-Price'].toString());
+                                 //   }
+                                 //
+                                 //   return total;
+                                 // }
+                                 // List<dynamic> prices = snapshot.data!.docs;
+                                 //   double totalPrice = calculateTotal(prices);
+                                 //
+                                 //     total = totalPrice;
+                                 //     tax = totalPrice*0.18;
+                                 //     shipping = 30;
+                                 //     grandTotal = total+tax+shipping;
 
 
 
@@ -272,19 +282,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
            ),
             const SizedBox(height: 30,),
 
-            Container(
-              width: double.infinity,
-              color: Colors.lightBlue,
-              height: 10,
-              child: GestureDetector(
-                onTap: (){
-                  setState(() {
-                    total;
-                    tax;
-                  });
-                },
-              ),
-            ),
+
 
             Stack(
               children: [
